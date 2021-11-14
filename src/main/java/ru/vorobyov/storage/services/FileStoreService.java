@@ -25,12 +25,12 @@ public class FileStoreService implements IFileStoreService {
     IFileMetaProvider fileMetaProvider;
 
     @Override
-    public String storeFile(byte[] content, String fileName, int subFileType) throws IOException, NoSuchAlgorithmException {
+    public String storeFile(byte[] content, String fileName, long fileSize, int subFileType) throws IOException, NoSuchAlgorithmException {
         final UUID md5 = HashHelper.getMd5Hash(content);
 
-        String filename = fileMetaProvider.checkFileExists(md5);
+        String filename = fileMetaProvider.checkFileExists(md5.toString());
         if (filename == null) {
-            fileMetaProvider.saveFileMeta(md5, fileName, subFileType);
+            fileMetaProvider.saveFileMeta(md5, fileName, fileSize, subFileType);
             filename = systemProvider.storeFile(content, md5, fileName);
         }
 
@@ -39,7 +39,7 @@ public class FileStoreService implements IFileStoreService {
 
     @Override
     public byte[] getFile(UUID md5) throws IOException {
-       String filename = fileMetaProvider.checkFileExists(md5);
+       String filename = fileMetaProvider.checkFileExists(md5.toString());
        String ext = FilenameUtils.getExtension(filename);
        String fullFileName = md5.toString() + "." + ext;
        return systemProvider.getFile(fullFileName);

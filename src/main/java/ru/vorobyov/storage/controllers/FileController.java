@@ -34,7 +34,7 @@ public class FileController {
 			return ResponseEntity.badRequest().body("File is Empty");
 		}
 		
-		String hash = fileStoreService.storeFile(file.getBytes(), file.getOriginalFilename(), subType);
+		String hash = fileStoreService.storeFile(file.getBytes(), file.getOriginalFilename(), file.getSize(), subType);
 		return ResponseEntity.ok(hash);
 	}
 	

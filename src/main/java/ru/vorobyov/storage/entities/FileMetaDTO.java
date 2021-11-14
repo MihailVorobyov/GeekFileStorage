@@ -1,21 +1,42 @@
 package ru.vorobyov.storage.entities;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 public class FileMetaDTO {
-    private UUID hash;
+    private String hash;
 
     private String fileName;
-
+    
+    private long fileSize;
+    
+    private int subType;
+    
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
+    }
+    
+    public void setSubType(int subType) {
+        this.subType = subType;
+    }
+    
+    public long getFileSize() {
+        return fileSize;
+    }
+    
+    public int getSubType() {
+        return subType;
+    }
+    
     public FileMetaDTO(String fileName) {
         this.fileName = fileName;
     }
 
-    public UUID getHash() {
+    public String getHash() {
         return hash;
     }
 
-    public void setHash(UUID hash) {
+    public void setHash(String hash) {
         this.hash = hash;
     }
 
