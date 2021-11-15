@@ -5,6 +5,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.vorobyov.storage.repositories.interfaces.IFileSystemProvider;
+import ru.vorobyov.storage.utils.FileNameUtil;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -17,6 +18,8 @@ import java.util.stream.Stream;
 
 @Component
 public class FileSystemProvider implements IFileSystemProvider {
+	
+	private final String STORE_PATH = "Store";
 	
 	@Value("${store.folder}")
 	private String storeFolder;
@@ -43,8 +46,10 @@ public class FileSystemProvider implements IFileSystemProvider {
 	
 	@Override
 	public String storeFile(byte[] content, UUID md5, String fileName) throws IOException {
-		String fileNameExtension = FilenameUtils.getExtension(fileName);
-		fileName = String.format("%s.%s", md5, fileNameExtension);
+//		String fileNameExtension = FilenameUtils.getExtension(fileName);
+//		fileName = String.format("%s.%s", md5, fileNameExtension);
+		
+		fileName = FileNameUtil.getFullFileName(fileName, md5);
 		
 		Path fullFileNamePath = Paths.get(storePath.toString(), fileName);
 		String fullFileName = fullFileNamePath.toString();
@@ -56,10 +61,14 @@ public class FileSystemProvider implements IFileSystemProvider {
 	}
 	
 	@Override
-	public void deleteFile(String fileHash) throws IOException {
-		Path path = Paths.get(fileHash);
-		if (Files.exists(path)) {
-			Files.delete(path);
-		}
+	public void deleteFile(String fileHash)  {
+			try {
+				Path path = Paths.get(STORE_PATH, fileHash);
+				if (Files.exists(path)) {
+					Files.delete(path);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 	}
 }

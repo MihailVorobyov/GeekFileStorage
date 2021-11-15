@@ -6,10 +6,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.vorobyov.storage.services.interfaces.IFileStoreService;
 
@@ -34,12 +31,12 @@ public class FileController {
 			return ResponseEntity.badRequest().body("File is Empty");
 		}
 		
-		String hash = fileStoreService.storeFile(file.getBytes(), file.getOriginalFilename(), file.getSize(), subType);
-		return ResponseEntity.ok(hash);
+		String name = fileStoreService.storeFile(file.getBytes(), file.getOriginalFilename(), file.getSize(), subType);
+		return ResponseEntity.ok(name);
 	}
 	
 	@GetMapping("/getfile")
-	public ResponseEntity<Resource> downloadFile(@RequestParam("hash")UUID hash) throws IOException {
+	public ResponseEntity<Resource> downloadFile(@RequestParam("hash") UUID hash) throws IOException {
 		byte[] array = fileStoreService.getFile(hash);
 		return ResponseEntity.ok()
 			.contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -47,7 +44,15 @@ public class FileController {
 	}
 	
 	@GetMapping("/getfiles")
-	public ResponseEntity<?> getFiles(@RequestParam("subtype")int subtype) throws IOException {
+	public ResponseEntity<?> getFiles(@RequestParam("subtype") int subtype) throws IOException {
 		return ResponseEntity.ok(fileStoreService.getMetaFiles(subtype));
+	}
+	
+	@DeleteMapping("/deletefile")
+	public ResponseEntity<?> deleteFile(@RequestParam("hash") String md5,
+										@RequestParam("fileName") String fileName,
+	                                    @RequestParam("subtype") int subtype) {
+		fileStoreService.deleteFile(md5, fileName, subtype);
+		return ResponseEntity.ok(String.format("File %s deleted", fileName));
 	}
 }

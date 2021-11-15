@@ -12,4 +12,6 @@ public interface IFileStoreService {
     byte[] getFile(UUID md5) throws IOException;
 
     Collection<FileMetaDTO> getMetaFiles(int subtype);
+    
+    void deleteFile(String md5, String fileName, int subtype);
 }

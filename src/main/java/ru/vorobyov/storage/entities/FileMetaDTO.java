@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 public class FileMetaDTO {
-    private String hash;
+    private UUID hash;
 
     private String fileName;
     
@@ -28,16 +28,19 @@ public class FileMetaDTO {
         return subType;
     }
     
-    public FileMetaDTO(String fileName) {
+    public FileMetaDTO(String hash, String fileName, long fileSize, int subType) {
+        this.hash = UUID.fromString(hash);
         this.fileName = fileName;
+        this.fileSize = fileSize;
+        this.subType = subType;
     }
-
-    public String getHash() {
+    
+    public UUID getHash() {
         return hash;
     }
 
     public void setHash(String hash) {
-        this.hash = hash;
+        this.hash = UUID.fromString(hash);
     }
 
     public String getFileName() {
